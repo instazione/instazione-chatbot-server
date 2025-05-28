@@ -6,6 +6,25 @@ const REZDY_API_KEY = '3261bbb8aae54023b3b0a6a5848aff15';
 app.use(express.json());
 app.use(require('cors')());
 
+// Default Dialogflow webhook handler
+app.post('/', async (req, res) => {
+  const action = req.body.queryResult.action;
+
+  // Respond to askInterest
+  if (action === 'askInterest') {
+    const interests = req.body.queryResult.parameters.interests;
+    return res.json({
+      fulfillmentText: `Great! I’ll look for ${interests} experiences for you.`
+    });
+  }
+
+  // Fallback
+  return res.json({
+    fulfillmentText: "Sorry, I didn't understand that."
+  });
+});
+
+// Optional: this route can still be used by your own app or tools
 app.post('/getItinerarySuggestions', async (req, res) => {
   const { destination, duration, interests } = req.body;
 
